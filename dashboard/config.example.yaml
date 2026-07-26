@@ -1,0 +1,3 @@
+# Copy to config.yaml (gitignored). Token comes from GITHUB_TOKEN env var, never this file.
+repo: "octocat/Hello-World"   # owner/name — point at your own repo once it has PRs
+weeks_back: 8                  # analysis window

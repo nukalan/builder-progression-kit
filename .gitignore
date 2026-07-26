@@ -1,0 +1,7 @@
+config.yaml
+velocity_report.md
+review_packets/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
