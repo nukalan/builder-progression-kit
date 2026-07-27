@@ -15,13 +15,14 @@ def main() -> None:
     cfg = yaml.safe_load(pathlib.Path(args.config).read_text())
     repo = cfg["repo"]
 
-    prs = github_client.fetch_merged_prs(repo)
+    prs = github_client.fetch_merged_prs(repo, limit=30)
+
+    reviews_by_pr = {pr["number"]: github_client.fetch_reviews(repo, pr["number"]) for pr in prs}
+
     results: dict[str, float | str] = {
         "Merged PRs analyzed": len(prs),
         "Median cycle time (hrs)": metrics.median_cycle_time_hours(prs),
-        # TODO(you): wire in review turnaround, deployment frequency, rework rate
-        # as you implement them. Reviews fetch (N+1 calls) is intentionally left
-        # for you to design — batching decision is a good /spec exercise.
+        "Median review turnaround (hrs)": metrics.median_review_turnaround_hours(prs, reviews_by_pr),
     }
     out = report.render(repo, results)
     pathlib.Path("velocity_report.md").write_text(out)

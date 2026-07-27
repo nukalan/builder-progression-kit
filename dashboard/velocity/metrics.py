@@ -34,13 +34,26 @@ def median_cycle_time_hours(prs: list[dict]) -> float:
 
 
 def median_review_turnaround_hours(prs: list[dict], reviews_by_pr: dict[int, list[dict]]) -> float:
-    """Median hours from PR created_at to FIRST review submitted_at.
+    """Median hours from PR created_at to FIRST review submitted_at."""
+    durations = []
+    for pr in prs:
+        pr_num = pr.get("number")
+        created = pr.get("created_at")
+        if not pr_num or not created:
+            continue
 
-    TODO(you + Claude Code): implement via /add-metric. See BUILD_PLAN.md step 3.
-    Spec: for each PR, find earliest review 'submitted_at'; skip PRs with no
-    reviews; median over hours; 0.0 for empty.
-    """
-    raise NotImplementedError("Build this with /add-metric — see BUILD_PLAN.md")
+        reviews = reviews_by_pr.get(pr_num, [])
+        if not reviews:
+            continue
+
+        submitted_times = [_parse(r["submitted_at"]) for r in reviews if r.get("submitted_at")]
+        if not submitted_times:
+            continue
+
+        first_review_at = min(submitted_times)
+        durations.append((first_review_at - _parse(created)).total_seconds() / 3600)
+
+    return round(median(durations), 2) if durations else 0.0
 
 
 def deployment_frequency_per_week(prs: list[dict], weeks: int) -> float:
