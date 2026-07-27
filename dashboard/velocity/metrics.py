@@ -11,7 +11,9 @@ from statistics import median
 def _parse(ts: str) -> datetime:
     """Parse a GitHub ISO-8601 timestamp like '2026-07-01T12:30:00Z'.
 
-    Example: _parse('2026-07-01T12:30:00Z') -> datetime(...)
+    Example:
+        >>> _parse('2026-07-01T12:30:00Z')
+        datetime.datetime(2026, 7, 1, 12, 30, tzinfo=datetime.timezone.utc)
     """
     return datetime.fromisoformat(ts.replace("Z", "+00:00"))
 
